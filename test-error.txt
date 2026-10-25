@@ -1,0 +1,15 @@
+
+
+An error occurred inside PHPUnit.
+
+Message:  syntax error, unexpected identifier "s", expecting "]"
+Location: C:\laragon\www\kierlab2\tests\Feature\Api\ServiceApiTest.php:47
+
+#0 C:\laragon\www\kierlab2\vendor\phpunit\phpunit\src\Runner\TestSuiteLoader.php(49): PHPUnit\Runner\TestSuiteLoader->loadSuiteClassFile('C:\\laragon\\www\\...')
+#1 C:\laragon\www\kierlab2\vendor\phpunit\phpunit\src\Framework\TestSuite.php(237): PHPUnit\Runner\TestSuiteLoader->load('C:\\laragon\\www\\...')
+#2 C:\laragon\www\kierlab2\vendor\phpunit\phpunit\src\TextUI\Configuration\Xml\TestSuiteMapper.php(104): PHPUnit\Framework\TestSuite->addTestFile('C:\\laragon\\www\\...', Array)
+#3 C:\laragon\www\kierlab2\vendor\phpunit\phpunit\src\TextUI\Configuration\TestSuiteBuilder.php(75): PHPUnit\TextUI\XmlConfiguration\TestSuiteMapper->map('C:\\laragon\\www\\...', Object(PHPUnit\TextUI\Configuration\TestSuiteCollection), Array, Array)
+#4 C:\laragon\www\kierlab2\vendor\phpunit\phpunit\src\TextUI\Application.php(389): PHPUnit\TextUI\Configuration\TestSuiteBuilder->build(Object(PHPUnit\TextUI\Configuration\Configuration))
+#5 C:\laragon\www\kierlab2\vendor\phpunit\phpunit\src\TextUI\Application.php(196): PHPUnit\TextUI\Application->buildTestSuite(Object(PHPUnit\TextUI\Configuration\Configuration))
+#6 C:\laragon\www\kierlab2\vendor\phpunit\phpunit\phpunit(104): PHPUnit\TextUI\Application->run(Array)
+#7 {main}

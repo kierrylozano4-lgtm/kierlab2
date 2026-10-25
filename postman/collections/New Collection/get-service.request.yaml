@@ -1,0 +1,39 @@
+$kind: http-request
+name: 'Get Service'
+description: 'Retrieve a single service by ID.'
+url: 'http://localhost:8000/api/services/{{serviceId}}'
+method: GET
+order: 3000
+headers:
+  - key: X-API-KEY
+    value: feature-test-internal-api-key
+  - key: Accept
+    value: application/json
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test("Status is 200 OK", function () {
+          pm.response.to.have.status(200);
+      });
+
+      pm.test("Response has service data", function () {
+          const json = pm.response.json();
+          pm.expect(json).to.have.property("data");
+          pm.expect(json.data).to.have.property("id");
+      });
+
+      pm.test("Service ID matches", function () {
+          const json = pm.response.json();
+          const expectedId = pm.collectionVariables.get("serviceId");
+          pm.expect(String(json.data.id)).to.eql(String(expectedId));
+      });
+
+      pm.test("Service has required fields", function () {
+          const json = pm.response.json();
+          pm.expect(json.data).to.have.property("title");
+          pm.expect(json.data).to.have.property("category");
+          pm.expect(json.data).to.have.property("description");
+          pm.expect(json.data).to.have.property("price");
+          pm.expect(json.data).to.have.property("status");
+      });

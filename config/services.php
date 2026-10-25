@@ -35,14 +35,19 @@ return [
         ],
     ],
 
+    'internal_api' => [
+        'key' => env('INTERNAL_API_KEY'),
+        'user_email' => env('INTERNAL_API_USER_EMAIL'),
+    ],
+
     'weather' => [
-        'api_key' => env('OPENWEATHER_API_KEY'),
-        'current_endpoint' => env('OPENWEATHER_CURRENT_ENDPOINT', 'https://api.openweathermap.org/data/2.5/weather'),
+        'api_key' => env('OPENWEATHER_API_KEY', 'demo-key'),
+        'city' => env('OPENWEATHER_CITY', 'Manila'),
         'geocoding_endpoint' => env('OPENWEATHER_GEOCODING_ENDPOINT', 'https://api.openweathermap.org/geo/1.0/direct'),
-        'city' => env('WEATHER_CITY', 'Manila'),
-        'connect_timeout' => (int) env('WEATHER_CONNECT_TIMEOUT', 3),
-        'timeout' => (int) env('WEATHER_TIMEOUT', 5),
-        'verify_ssl' => filter_var(env('WEATHER_VERIFY_SSL', true), FILTER_VALIDATE_BOOL),
+        'current_endpoint' => env('OPENWEATHER_CURRENT_ENDPOINT', 'https://api.openweathermap.org/data/2.5/weather'),
+        'verify_ssl' => env('OPENWEATHER_VERIFY_SSL', true),
+        'connect_timeout' => env('OPENWEATHER_CONNECT_TIMEOUT', 10),
+        'timeout' => env('OPENWEATHER_TIMEOUT', 15),
     ],
 
 ];

@@ -1,29 +1,50 @@
 <?php
 
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ChatController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\LeaderboardController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', fn () => view('welcome'));
-Route::get('/login', [AuthController::class, 'create'])->middleware('guest')->name('login');
-Route::post('/login', [AuthController::class, 'store'])->middleware('guest')->name('login.store');
-Route::get('/register', [AuthController::class, 'register'])->middleware('guest')->name('register');
-Route::post('/register', [AuthController::class, 'storeRegistration'])->middleware('guest')->name('register.store');
-Route::post('/logout', [AuthController::class, 'destroy'])->middleware('auth')->name('logout');
+Route::view('/', 'pages.welcome')->name('home');
+Route::get('/login', [AuthController::class, 'loginForm'])->middleware('guest')->name('login');
+Route::post('/login', [AuthController::class, 'login'])->middleware('guest');
+Route::get('/register', [AuthController::class, 'registerForm'])->middleware('guest')->name('register');
+Route::post('/register', [AuthController::class, 'register'])->middleware('guest');
 
 Route::middleware('auth')->group(function () {
-    Route::get('/users', [UserController::class, 'index'])->name('users.index');
-    Route::middleware('admin')->group(function () {
-        Route::get('/admin', [UserController::class, 'overview'])->name('admin');
-        Route::get('/weather', [UserController::class, 'weatherPage'])->name('weather.page');
-        Route::get('/weather/data', [UserController::class, 'weather'])->name('weather.data');
-    });
+    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/services/{service}', [DashboardController::class, 'showService'])->name('services.show');
+    Route::post('/services', [DashboardController::class, 'storeService'])->name('services.store');
+    Route::post('/services/{service}/request', [DashboardController::class, 'requestService'])->name('services.request');
+    Route::patch('/requests/{serviceRequest}', [DashboardController::class, 'updateRequest'])->name('requests.update');
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::get('/profile/{user}', [ProfileController::class, 'show'])->name('profile.show');
+    Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::post('/notifications/{notification}/read', [ProfileController::class, 'markNotificationAsRead'])->name('notifications.read');
+    Route::get('/account/setup', [ProfileController::class, 'setup'])->name('account.setup');
+    Route::put('/account/setup', [ProfileController::class, 'saveSetup'])->name('account.setup.save');
+    Route::post('/requests/{serviceRequest}/review', [ProfileController::class, 'storeReview'])->name('reviews.store');
+    Route::get('/leaderboard', [LeaderboardController::class, 'index'])->name('leaderboard');
+    Route::get('/chat/{serviceRequest}', [ChatController::class, 'show'])->name('chat.show');
+    Route::post('/chat/{serviceRequest}', [ChatController::class, 'store'])->name('chat.store');
+});
 
-    Route::middleware('admin')->group(function () {
-        Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
-        Route::post('/users', [UserController::class, 'store'])->name('users.store');
-        Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
-        Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
-        Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
-    });
+Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/', [AdminController::class, 'index'])->name('index');
+    Route::get('/users', [AdminController::class, 'users'])->name('users.index');
+    Route::get('/services', [AdminController::class, 'services'])->name('services.index');
+    Route::get('/weather', [UserController::class, 'weatherPage'])->name('weather.page');
+    Route::get('/weather/data', [UserController::class, 'weather'])->name('weather.data');
+    Route::patch('/users/bulk', [AdminController::class, 'bulkUpdateUsers'])->name('users.bulk');
+    Route::patch('/users/{user}/role', [AdminController::class, 'toggleRole'])->name('users.role');
+    Route::delete('/users/{user}', [AdminController::class, 'destroyUser'])->name('users.destroy');
+    Route::patch('/services/bulk', [AdminController::class, 'bulkToggleServices'])->name('services.bulk');
+    Route::patch('/services/{service}', [AdminController::class, 'toggleService'])->name('services.toggle');
+    Route::delete('/services/{service}', [AdminController::class, 'destroyService'])->name('services.destroy');
+    Route::post('/announcements', [AdminController::class, 'storeAnnouncement'])->name('announcements.store');
 });

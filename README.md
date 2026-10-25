@@ -1,3 +1,17 @@
+## CampusConnect Laravel migration
+
+The former XAMPP/PHP CampusConnect app is now represented in Laravel. The migrated flow includes registration and login, student profiles, service posting/search, service requests, and request chat.
+
+### Run with XAMPP MariaDB
+
+1. Create a database named `campusconnect` in phpMyAdmin.
+2. Copy `.env.example` to `.env` and set `APP_KEY` with `php artisan key:generate`.
+3. Set `DB_CONNECTION=mysql`, `DB_HOST=127.0.0.1`, `DB_PORT=3306`, `DB_DATABASE=campusconnect`, `DB_USERNAME=root`, and an empty `DB_PASSWORD` for a default XAMPP install.
+4. Run `php artisan migrate`.
+5. Run `npm install`, `npm run build`, then `php artisan serve`.
+
+Open `http://127.0.0.1:8000`. The old SQL dump can be imported first for existing records, but a fresh Laravel database should use the included migrations.
+
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
 <p align="center">

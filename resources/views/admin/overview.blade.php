@@ -8,8 +8,8 @@
         <p>Track system health, manage campus access, and prioritize risk areas from a single geo-aware command center.</p>
     </div>
     <div class="hero-actions">
-        <a href="{{ route('users.index') }}" class="btn-primary">Manage users</a>
-        <a href="{{ route('weather.page') }}" class="btn-secondary">Open weather report</a>
+        <a href="{{ route('admin.users.index') }}" class="btn-primary">Manage users</a>
+        <a href="{{ route('admin.weather.page') }}" class="btn-secondary">Open weather report</a>
     </div>
 </div>
 

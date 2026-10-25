@@ -15,17 +15,24 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        User::updateOrCreate(
-            ['email' => 'admin@example.com'],
+        User::query()->firstOrCreate(
+            ['email' => 'test@example.com'],
             [
-                'name' => 'Campus Admin',
+                'full_name' => 'Test User',
+                'student_id' => 'TEST-ACCOUNT',
                 'password' => 'password',
-                'role' => 'Admin',
-            ],
+            ]
         );
 
-        User::factory(29)->create([
-            'role' => 'Member',
-        ]);
+        User::query()->firstOrCreate(
+            ['email' => config('services.internal_api.user_email')],
+            [
+                'full_name' => 'Service Account',
+                'student_id' => 'SERVICE-ACCOUNT',
+                'password' => 'password',
+            ]
+        );
+
+        $this->call(MarketplaceServiceSeeder::class);
     }
 }

@@ -1,0 +1,64 @@
+$kind: http-request
+name: 'Create Service'
+description: 'Create a new service for the authenticated user.'
+url: 'http://localhost:8000/api/services'
+method: POST
+order: 2000
+headers:
+  - key: X-API-KEY
+    value: feature-test-internal-api-key
+  - key: Content-Type
+    value: application/json
+  - key: Accept
+    value: application/json
+body:
+  type: json
+  content: |-
+    {
+      "title": "Test Service",
+      "category": "Tech",
+      "description": "A test service created by Postman CRUD tests.",
+      "price": 99.99,
+      "price_negotiable": false,
+      "price_note": "Fixed rate",
+      "status": "Active",
+      "visible_in_dashboard": true
+    }
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test("Status is 201 Created", function () {
+          pm.response.to.have.status(201);
+      });
+
+      pm.test("Response has service data", function () {
+          const json = pm.response.json();
+          pm.expect(json).to.have.property("data");
+          pm.expect(json.data).to.have.property("id");
+      });
+
+      pm.test("Service title matches", function () {
+          const json = pm.response.json();
+          pm.expect(json.data.title).to.eql("Test Service");
+      });
+
+      pm.test("Service category matches", function () {
+          const json = pm.response.json();
+          pm.expect(json.data.category).to.eql("Tech");
+      });
+
+      pm.test("Service price matches", function () {
+          const json = pm.response.json();
+          pm.expect(parseFloat(json.data.price)).to.eql(99.99);
+      });
+
+      pm.test("Location header is present", function () {
+          pm.response.to.have.header("Location");
+      });
+
+      // Save the created service ID for subsequent requests
+      const json = pm.response.json();
+      if (json.data && json.data.id) {
+          pm.collectionVariables.set("serviceId", json.data.id);
+      }

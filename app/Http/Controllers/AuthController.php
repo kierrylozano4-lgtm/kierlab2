@@ -2,25 +2,21 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Profile;
 use App\Models\User;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\View\View;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
-    public function create(): View
+    public function loginForm()
     {
         return view('auth.login');
     }
 
-    public function register(): View
-    {
-        return view('users.register');
-    }
-
-    public function store(Request $request): RedirectResponse
+    public function login(Request $request)
     {
         $credentials = $request->validate([
             'email' => ['required', 'email'],
@@ -28,37 +24,59 @@ class AuthController extends Controller
         ]);
 
         if (! Auth::attempt($credentials, $request->boolean('remember'))) {
-            return back()->withErrors(['email' => 'The provided credentials are incorrect.'])->onlyInput('email');
+            return back()->withInput($request->only('email'))->withErrors(['email' => 'Invalid email or password.']);
         }
 
         $request->session()->regenerate();
 
-        return to_route(Auth::user()->role === 'Admin' ? 'admin' : 'users.index')
-            ->with('status', 'Welcome, '.Auth::user()->name.'!');
+        return redirect()->intended(route('dashboard'));
     }
 
-    public function storeRegistration(Request $request): RedirectResponse
+    public function registerForm()
     {
-        $validated = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email', 'max:255', 'unique:users,email'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
-        ]);
-
-        User::create([
-            ...$validated,
-            'role' => 'Member',
-        ]);
-
-        return to_route('login')->with('status', 'Your account has been created. Please sign in.');
+        return view('auth.register');
     }
 
-    public function destroy(Request $request): RedirectResponse
+    public function register(Request $request)
+    {
+        $data = $request->validate([
+            'full_name' => ['required', 'string', 'max:100'],
+            'email' => ['required', 'email', 'max:100', 'unique:users,email'],
+            'password' => ['required', 'string', 'min:6', 'confirmed'],
+        ]);
+
+        do {
+            $studentId = now()->format('Y').'-'.random_int(100000, 999999);
+        } while (User::where('student_id', $studentId)->exists());
+
+        $user = DB::transaction(function () use ($data, $studentId) {
+            $user = User::create([
+                'full_name' => $data['full_name'],
+                'student_id' => $studentId,
+                'email' => strtolower($data['email']),
+                'password' => Hash::make($data['password']),
+            ]);
+
+            Profile::create([
+                'user_id' => $user->id,
+                'verification_status' => str_ends_with(strtolower($user->email), '.edu') || str_ends_with(strtolower($user->email), '.edu.ph') ? 'Verified' : 'Unverified',
+            ]);
+
+            return $user;
+        });
+
+        Auth::login($user);
+        $request->session()->regenerate();
+
+        return redirect()->route('profile.edit')->with('status', 'Complete your student profile to get started.');
+    }
+
+    public function logout(Request $request)
     {
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return to_route('login')->with('status', 'You have been logged out.');
+        return redirect()->route('home');
     }
 }

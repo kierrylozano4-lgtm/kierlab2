@@ -1,0 +1,135 @@
+@extends('layouts.app')
+
+@section('content')
+    <section class="section-heading">
+        <div>
+            <p class="eyebrow">{{ $isOwnProfile ? 'Your profile' : 'Campus member' }}</p>
+            <h1>{{ $profileUser->full_name }}</h1>
+            @if($isOwnProfile)
+                <p class="muted">{{ $profileUser->email }} · Student ID {{ $profileUser->student_id }}</p>
+            @endif
+        </div>
+        <div class="avatar">{{ $profileUser->initials() }}</div>
+    </section>
+
+    <nav class="tabs" aria-label="Profile sections">
+        <a class="{{ $tab === 'profile' ? 'active' : '' }}" href="{{ $isOwnProfile ? route('profile.edit') : route('profile.show', $profileUser) }}?tab=profile">Profile</a>
+        <a class="{{ $tab === 'services' ? 'active' : '' }}" href="{{ $isOwnProfile ? route('profile.edit') : route('profile.show', $profileUser) }}?tab=services">Services ({{ $profileUser->services->count() }})</a>
+        <a class="{{ $tab === 'reviews' ? 'active' : '' }}" href="{{ $isOwnProfile ? route('profile.edit') : route('profile.show', $profileUser) }}?tab=reviews">Reviews ({{ $profileUser->reviewsReceived->count() }})</a>
+        @if($isOwnProfile)
+            <a class="{{ $tab === 'notifications' ? 'active' : '' }}" href="{{ route('profile.edit') }}?tab=notifications">Notifications ({{ $profileUser->notifications->where('is_read', false)->count() }})</a>
+        @endif
+    </nav>
+
+    @if($tab === 'profile')
+        <div class="profile-grid">
+            <section class="panel">
+                <div class="section-title">
+                    <h2>Student details</h2>
+                    <span>{{ $profileUser->profile?->verification_status ?? 'Unverified' }}</span>
+                </div>
+                @if($isOwnProfile)
+                    <form method="POST" action="{{ route('profile.update') }}" class="form-stack">
+                        @csrf
+                        @method('PUT')
+                        <label>Campus / dorm address<input name="campus_address" value="{{ old('campus_address', $profileUser->profile?->campus_address) }}" required></label>
+                        <div class="two-col">
+                            <label>Grade / year<input name="grade_level" value="{{ old('grade_level', $profileUser->profile?->grade_level) }}" required></label>
+                            <label>Course / major<input name="course_major" value="{{ old('course_major', $profileUser->profile?->course_major) }}" required></label>
+                        </div>
+                        <label>Bio<textarea name="bio" rows="5">{{ old('bio', $profileUser->profile?->bio) }}</textarea></label>
+                        @foreach(['facebook', 'instagram', 'tiktok', 'github'] as $social)
+                            <label>{{ ucfirst($social) }}<input name="{{ $social }}" value="{{ old($social, $profileUser->profile?->{$social}) }}"></label>
+                        @endforeach
+                        <button class="button" type="submit">Save profile</button>
+                    </form>
+                @else
+                    <p class="profile-copy">{{ $profileUser->profile?->bio ?? 'This student has not added a bio yet.' }}</p>
+                    <dl class="facts">
+                        <dt>Course / major</dt>
+                        <dd>{{ $profileUser->profile?->course_major ?? 'Not provided' }}</dd>
+                        <dt>Grade / year</dt>
+                        <dd>{{ $profileUser->profile?->grade_level ?? 'Not provided' }}</dd>
+                    </dl>
+                @endif
+            </section>
+            <section class="panel">
+                <h2>Social links</h2>
+                <dl class="facts">
+                    @foreach(['facebook', 'instagram', 'tiktok', 'github'] as $social)
+                        <dt>{{ ucfirst($social) }}</dt>
+                        <dd>{{ $profileUser->profile?->{$social} ?: 'Not linked' }}</dd>
+                    @endforeach
+                </dl>
+            </section>
+        </div>
+    @elseif($tab === 'services')
+        <section class="service-grid">
+            @forelse($profileUser->services as $service)
+                <article class="service-card">
+                    <span class="tag">{{ $service->category }}</span>
+                    <h3>{{ $service->title }}</h3>
+                    <p>{{ $service->description }}</p>
+                    <span class="status {{ strtolower($service->status) }}">{{ $service->status }}</span>
+                </article>
+            @empty
+                <p class="empty muted">No services posted yet.</p>
+            @endforelse
+        </section>
+    @elseif($tab === 'reviews')
+        @if($isOwnProfile && $reviewableRequests->isNotEmpty())
+            <section class="panel">
+                <h2>Review completed requests</h2>
+                @foreach($reviewableRequests as $serviceRequest)
+                    <form method="POST" action="{{ route('reviews.store', $serviceRequest) }}" class="form-stack review-row">
+                        @csrf
+                        <label>
+                            Completed service: {{ $serviceRequest->service->title }}
+                            <span class="muted">with {{ $serviceRequest->requester_id === $profileUser->id ? $serviceRequest->provider->full_name : $serviceRequest->requester->full_name }}</span>
+                        </label>
+                        <label>Rating
+                            <select name="rating" required>
+                                <option value="">Choose a rating</option>
+                                @foreach(range(5, 1) as $rating)
+                                    <option value="{{ $rating }}" @selected(old('rating') == $rating)>{{ $rating }} / 5</option>
+                                @endforeach
+                            </select>
+                        </label>
+                        <label>Comment (optional)<textarea name="comment" rows="3" maxlength="1000">{{ old('comment') }}</textarea></label>
+                        <button class="button button-small" type="submit">Submit review</button>
+                    </form>
+                @endforeach
+            </section>
+        @endif
+        <section class="panel">
+            @forelse($profileUser->reviewsReceived as $review)
+                <div class="review-row">
+                    <strong>{{ str_repeat('★', $review->rating) }}{{ str_repeat('☆', 5 - $review->rating) }}</strong>
+                    <p>{{ $review->comment ?: 'No written comment.' }}</p>
+                    <span>by {{ $review->reviewer->full_name }}</span>
+                </div>
+            @empty
+                <p class="empty muted">No reviews yet.</p>
+            @endforelse
+        </section>
+    @else
+        <section class="panel">
+            @forelse($profileUser->notifications as $notification)
+                <div class="review-row">
+                    <div>
+                        <strong>{{ $notification->message }}</strong>
+                        <span>{{ $notification->created_at->format('M j, Y g:i A') }}</span>
+                    </div>
+                    @if($notification->is_read === false)
+                        <form method="POST" action="{{ route('notifications.read', $notification) }}">
+                            @csrf
+                            <button class="button button-small" type="submit">Mark read</button>
+                        </form>
+                    @endif
+                </div>
+            @empty
+                <p class="empty muted">No notifications yet.</p>
+            @endforelse
+        </section>
+    @endif
+@endsection

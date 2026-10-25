@@ -24,7 +24,15 @@ class WeatherService
      */
     public function current(?string $location = null): ?array
     {
-        $configuration = config('services.weather');
+        $configuration = config('services.weather', [
+            'city' => 'Manila',
+            'geocoding_endpoint' => 'https://api.openweathermap.org/geo/1.0/direct',
+            'current_endpoint' => 'https://api.openweathermap.org/data/2.5/weather',
+            'api_key' => 'demo-key',
+            'verify_ssl' => true,
+            'connect_timeout' => 10,
+            'timeout' => 15,
+        ]);
         $coordinates = $this->coordinatesFor($location ?: $configuration['city']);
 
         if ($coordinates === null) {
@@ -88,7 +96,15 @@ class WeatherService
      */
     private function coordinatesFor(string $location): ?array
     {
-        $configuration = config('services.weather');
+        $configuration = config('services.weather', [
+            'city' => 'Manila',
+            'geocoding_endpoint' => 'https://api.openweathermap.org/geo/1.0/direct',
+            'current_endpoint' => 'https://api.openweathermap.org/data/2.5/weather',
+            'api_key' => 'demo-key',
+            'verify_ssl' => true,
+            'connect_timeout' => 10,
+            'timeout' => 15,
+        ]);
 
         try {
             $response = Http::acceptJson()

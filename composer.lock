@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "160e913bcdb8e41e2295c8f3b1c17146",
+    "content-hash": "868668d06cd3e649b421d3e9586d7dd7",
     "packages": [
         {
             "name": "brick/math",
@@ -1061,16 +1061,16 @@
         },
         {
             "name": "laravel/framework",
-            "version": "v13.31.0",
+            "version": "v13.30.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/framework.git",
-                "reference": "7c75fbf93f91fa077d3df1c820cc14f4e59a9774"
+                "reference": "718d17db56861e0a49f644217c8853dab1bff8ce"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/framework/zipball/7c75fbf93f91fa077d3df1c820cc14f4e59a9774",
-                "reference": "7c75fbf93f91fa077d3df1c820cc14f4e59a9774",
+                "url": "https://api.github.com/repos/laravel/framework/zipball/718d17db56861e0a49f644217c8853dab1bff8ce",
+                "reference": "718d17db56861e0a49f644217c8853dab1bff8ce",
                 "shasum": ""
             },
             "require": {
@@ -1284,7 +1284,7 @@
                 "issues": "https://github.com/laravel/framework/issues",
                 "source": "https://github.com/laravel/framework"
             },
-            "time": "2026-09-08T14:22:55+00:00"
+            "time": "2026-09-01T21:42:30+00:00"
         },
         {
             "name": "laravel/prompts",
@@ -6478,16 +6478,16 @@
         },
         {
             "name": "laravel/boost",
-            "version": "v2.8.0",
+            "version": "v2.7.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/boost.git",
-                "reference": "ac0b51fbaf3cc19453aef7a1b188bce19a1ec049"
+                "reference": "1ffcccb0f5f041c68bebea4d907cc15533d0838f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/boost/zipball/ac0b51fbaf3cc19453aef7a1b188bce19a1ec049",
-                "reference": "ac0b51fbaf3cc19453aef7a1b188bce19a1ec049",
+                "url": "https://api.github.com/repos/laravel/boost/zipball/1ffcccb0f5f041c68bebea4d907cc15533d0838f",
+                "reference": "1ffcccb0f5f041c68bebea4d907cc15533d0838f",
                 "shasum": ""
             },
             "require": {
@@ -6540,7 +6540,7 @@
                 "issues": "https://github.com/laravel/boost/issues",
                 "source": "https://github.com/laravel/boost"
             },
-            "time": "2026-09-08T17:07:40+00:00"
+            "time": "2026-09-07T04:38:53+00:00"
         },
         {
             "name": "laravel/mcp",
@@ -6783,16 +6783,16 @@
         },
         {
             "name": "laravel/pint",
-            "version": "v1.31.1",
+            "version": "v1.31.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/pint.git",
-                "reference": "b136cebaf0b3f7d288bdafad5088858d082580aa"
+                "reference": "0730363418ad06a7b267d8f2a4f87eed0ab7f610"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/pint/zipball/b136cebaf0b3f7d288bdafad5088858d082580aa",
-                "reference": "b136cebaf0b3f7d288bdafad5088858d082580aa",
+                "url": "https://api.github.com/repos/laravel/pint/zipball/0730363418ad06a7b267d8f2a4f87eed0ab7f610",
+                "reference": "0730363418ad06a7b267d8f2a4f87eed0ab7f610",
                 "shasum": ""
             },
             "require": {
@@ -6804,8 +6804,8 @@
             },
             "require-dev": {
                 "composer/semver": "^3.4.4",
-                "friendsofphp/php-cs-fixer": "^3.95.25",
-                "illuminate/view": "^13.31.0",
+                "friendsofphp/php-cs-fixer": "^3.95.24",
+                "illuminate/view": "^13.30.1",
                 "larastan/larastan": "^3.11.0",
                 "laravel-zero/framework": "^13.0.0",
                 "laravel/agent-detector": "^2.0.2",
@@ -6849,7 +6849,7 @@
                 "issues": "https://github.com/laravel/pint/issues",
                 "source": "https://github.com/laravel/pint"
             },
-            "time": "2026-09-08T17:10:00+00:00"
+            "time": "2026-09-07T15:03:30+00:00"
         },
         {
             "name": "laravel/roster",

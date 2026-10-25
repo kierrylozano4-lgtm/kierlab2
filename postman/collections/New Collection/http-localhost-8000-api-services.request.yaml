@@ -1,0 +1,58 @@
+$kind: http-request
+name: List Services
+description: Get all services for the authenticated user (paginated).
+url: http://localhost:8000/api/services/10
+method: PUT
+body:
+  type: json
+  content: "{\r
+
+    \    \"title\": \"Biology exam preparation with BABY LOVES\",\r
+
+    \    \"category\": \"Academic\",\r
+
+    \    \"description\": \"Create a focused review plan and work through biology practice questions.\",\r
+
+    \    \"price\": 180.00,\r
+
+    \    \"price_negotiable\": true,\r
+
+    \    \"price_note\": \"Per session\"\r
+
+    }"
+settings:
+  disabledSystemHeaders:
+    - host
+    - user-agent
+    - accept
+    - accept-encoding
+    - connection
+order: 1000
+headers:
+  X-API-KEY: feature-test-internal-api-key
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Status is 200 OK", function () {
+          pm.response.to.have.status(200);
+      });
+
+      pm.test("Response has data array", function () {
+          const json = pm.response.json();
+          pm.expect(json).to.have.property("data").that.is.an("array");
+      });
+
+      pm.test("Response has pagination meta", function () {
+          const json = pm.response.json();
+          pm.expect(json).to.have.property("meta");
+          pm.expect(json.meta).to.have.property("current_page");
+          pm.expect(json.meta).to.have.property("total");
+          pm.expect(json.meta).to.have.property("per_page");
+      });
+
+      pm.test("Response has pagination links", function () {
+          const json = pm.response.json();
+          pm.expect(json).to.have.property("links");
+          pm.expect(json.links).to.have.property("first");
+      });
+    language: text/javascript

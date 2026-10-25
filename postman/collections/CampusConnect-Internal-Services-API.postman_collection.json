@@ -1,0 +1,133 @@
+{
+  "info": {
+    "_postman_id": "35d11612-0c03-4a8d-ae80-50e504ac6d74",
+    "name": "CampusConnect Internal Services API",
+    "description": "Run all CRUD requests with one API key header. Set INTERNAL_API_KEY and INTERNAL_API_USER_EMAIL in the Laravel .env file, then enter the same key in the apiKey collection variable. Generate a key with: php -r \"echo bin2hex(random_bytes(32));\". The configured account owns the services managed by this API.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "apikey",
+    "apikey": [
+      {
+        "key": "key",
+        "value": "X-API-KEY",
+        "type": "string"
+      },
+      {
+        "key": "value",
+        "value": "{{apiKey}}",
+        "type": "string"
+      },
+      {
+        "key": "in",
+        "value": "header",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://127.0.0.1:8000"
+    },
+    {
+      "key": "apiKey",
+      "value": ""
+    },
+    {
+      "key": "serviceId",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "Create service",
+      "request": {
+        "method": "POST",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Postman sample tutoring\",\n  \"category\": \"Academic\",\n  \"description\": \"Created through the internal API for CRUD verification.\",\n  \"price\": 200,\n  \"price_negotiable\": true,\n  \"price_note\": \"Per hour\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "{{baseUrl}}/api/services"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "if (pm.response.code === 201) {",
+              "    pm.collectionVariables.set('serviceId', pm.response.json().data.id);",
+              "}"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Read all my services",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/services"
+      }
+    },
+    {
+      "name": "Read one service",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/services/{{serviceId}}"
+      }
+    },
+    {
+      "name": "Update service",
+      "request": {
+        "method": "PATCH",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"Updated Postman sample tutoring\",\n  \"price\": 250\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "{{baseUrl}}/api/services/{{serviceId}}"
+      }
+    },
+    {
+      "name": "Delete service",
+      "request": {
+        "method": "DELETE",
+        "url": "{{baseUrl}}/api/services/{{serviceId}}"
+      }
+    },
+    {
+      "name": "Validation error example",
+      "request": {
+        "method": "POST",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"\",\n  \"category\": \"Not a category\",\n  \"description\": \"\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "{{baseUrl}}/api/services"
+      }
+    },
+    {
+      "name": "Not found example",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/services/999999999"
+      }
+    }
+  ]
+}

@@ -59,7 +59,7 @@
         result.classList.add('hidden');
 
         try {
-            const response = await fetch(`{{ route('weather.data') }}${location ? `?location=${encodeURIComponent(location)}` : ''}`, {
+            const response = await fetch(`{{ route('admin.weather.data') }}${location ? `?location=${encodeURIComponent(location)}` : ''}`, {
                 headers: { Accept: 'application/json' },
             });
             const data = await response.json();

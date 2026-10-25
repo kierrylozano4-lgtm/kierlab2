@@ -1,0 +1,49 @@
+$kind: http-request
+name: 'Update Service'
+description: 'Partially update a service using PATCH.'
+url: 'http://localhost:8000/api/services/{{serviceId}}'
+method: PATCH
+order: 4000
+headers:
+  - key: X-API-KEY
+    value: feature-test-internal-api-key
+  - key: Content-Type
+    value: application/json
+  - key: Accept
+    value: application/json
+body:
+  type: json
+  content: |-
+    {
+      "title": "Updated Test Service",
+      "price": 149.99,
+      "price_negotiable": false
+    }
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test("Status is 200 OK", function () {
+          pm.response.to.have.status(200);
+      });
+
+      pm.test("Response has service data", function () {
+          const json = pm.response.json();
+          pm.expect(json).to.have.property("data");
+      });
+
+      pm.test("Title was updated", function () {
+          const json = pm.response.json();
+          pm.expect(json.data.title).to.eql("Updated Test Service");
+      });
+
+      pm.test("Price was updated", function () {
+          const json = pm.response.json();
+          pm.expect(parseFloat(json.data.price)).to.eql(149.99);
+      });
+
+      pm.test("Service ID is unchanged", function () {
+          const json = pm.response.json();
+          const expectedId = pm.collectionVariables.get("serviceId");
+          pm.expect(String(json.data.id)).to.eql(String(expectedId));
+      });
