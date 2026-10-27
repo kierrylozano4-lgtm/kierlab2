@@ -4,6 +4,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\GoogleAuthController;
 use App\Http\Controllers\LeaderboardController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
@@ -14,6 +15,8 @@ Route::get('/login', [AuthController::class, 'loginForm'])->middleware('guest')-
 Route::post('/login', [AuthController::class, 'login'])->middleware('guest');
 Route::get('/register', [AuthController::class, 'registerForm'])->middleware('guest')->name('register');
 Route::post('/register', [AuthController::class, 'register'])->middleware('guest');
+Route::get('/auth/google', [GoogleAuthController::class, 'redirect'])->middleware('guest')->name('google.redirect');
+Route::get('/auth/google/callback', [GoogleAuthController::class, 'callback'])->middleware('guest')->name('google.callback');
 
 Route::middleware('auth')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');

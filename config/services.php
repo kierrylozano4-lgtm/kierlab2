@@ -40,6 +40,12 @@ return [
         'user_email' => env('INTERNAL_API_USER_EMAIL'),
     ],
 
+    'google' => [
+        'client_id' => env('GOOGLE_CLIENT_ID'),
+        'client_secret' => env('GOOGLE_CLIENT_SECRET'),
+        'redirect' => env('GOOGLE_REDIRECT_URI', 'http://127.0.0.1:8000/auth/google/callback'),
+    ],
+
     'weather' => [
         'api_key' => env('OPENWEATHER_API_KEY', 'demo-key'),
         'city' => env('OPENWEATHER_CITY', 'Manila'),
